@@ -1,0 +1,18 @@
+#version 1.0
+#contact: piotr4@gmail.com
+#GPLv3
+
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=application/x-rar;
+Actions=cbztocbr;
+X-KDE-Submenu=Convert
+X-KDE-StartupNotify=false
+X-KDE-Priority=TopLevel
+#InitialPreference=5
+
+[Desktop Action cbztocbr]
+Name=Convert to CBZ
+Icon=utilities-file-archiver
+Exec=bash -c 'type 7z; if [ $? -eq 0 ]; then a=$(basename -- "%u"); namewithoutext="${a%.*}"; dbusRef=$(kdialog --title="CBRs to CBZs" --progressbar "          Converting...    Please wait...         " 0); extr=$(7z x "%u" -otempdir_"$namewithoutext") && cmpr=$(7z -tzip a "$namewithoutext.cbz" ./tempdir_"$namewithoutext"/* -sdel) && rm -d ./tempdir_"$namewithoutext"; outp=$(echo "$extr\n$cmpr"); qdbus $dbusRef close; kdialog --title "CBRs to CBZs" --passivepopup "$namewithoutext converted!"; kdialog --title "CBRs to CBZs" --textbox /dev/stdin <<< $outp 450 550; else kdialog --title "Package missing" --error "Please install 7z from package manager."; fi;';
